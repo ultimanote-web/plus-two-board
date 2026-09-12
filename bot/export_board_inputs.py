@@ -74,6 +74,20 @@ def main():
     meta = json.load(open(os.path.join(a.repo, "schema", "stations.json")))
     COORDS, OVERRIDES = meta["stations"], meta.get("slug_overrides", {})
 
+    # Prefer offsets measured against the forecast the BOARD computes (build_debias.py).
+    # wx.db's debias_median is measured against bt_daily.fcst_raw, which is NOT the same
+    # quantity at every station — Seoul differs by 1.66 °C — so applying it to our own
+    # forecast would double-count rather than correct. Fall back to it only where the
+    # forecast-native offset is missing, and always record which one was used.
+    OM = {}
+    om_path = os.path.join(a.repo, "data", "debias_om.json")
+    if os.path.exists(om_path):
+        OM = json.load(open(om_path)).get("stations", {})
+        print(f"using forecast-native offsets for {len(OM)} stations (data/debias_om.json)")
+    else:
+        print("data/debias_om.json absent — falling back to wx.db fcst_raw-based offsets; "
+              "the board should treat gaps as un-de-biased")
+
     cx = sqlite3.connect(f"file:{a.db}?mode=ro", uri=True)
     cx.row_factory = sqlite3.Row
 
@@ -102,6 +116,7 @@ def main():
 
         slug = slugify(city, OVERRIDES)
         c = COORDS[icao]
+        om = OM.get(slug)
         stations[slug] = {
             "display": city,
             "icao": icao,
@@ -109,11 +124,20 @@ def main():
             "lat": c["lat"],
             "lon": c["lon"],
             "station_verified": bool(c.get("verified")),
-            "debias_c": round(float(r["debias_median"]), 2),
+            "debias_c": (om["debias_c"] if om else round(float(r["debias_median"]), 2)),
             "debias_sign": DEBIAS_SIGN,
-            "debias_n": snap["debias_days"],
-            "debias_method": f"median residual, {snap['debias_days']}d, seasonal window",
+            "debias_basis": ("open_meteo_1117_max" if om else "bt_daily_fcst_raw"),
+            "debias_transfers": bool(om),
+            "debias_n": (om["n_days"] if om else snap["debias_days"]),
+            "debias_method": (om["debias_method"] if om else
+                              f"median residual vs fcst_raw, {snap['debias_days']}d, seasonal window"),
             "debias_asof": snap["bt_max_date"],
+            # residual spread — bt_daily's bucket frequency does not expose this, and a
+            # wide spread means the tail is understated however well centred the median is
+            "resid_sd": (om["sd"] if om else None),
+            "resid_p10": (om["p10"] if om else None),
+            "resid_p90": (om["p90"] if om else None),
+            "resid_ge2_share": (om["resid_ge2_share"] if om else None),
         }
         tails[slug] = {
             "n": int(r["n"]),
