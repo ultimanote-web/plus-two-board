@@ -204,6 +204,46 @@ def main():
         warns.append("no data/latest.json — the bot export has not run; the board is "
                      "running without per-station de-bias offsets")
 
+    # ---- 6a2. two independent estimates of the same risk --------------------
+    # bt_daily's tail is a BUCKET frequency measured against fcst_raw. debias_om gives a
+    # second, forecast-native estimate: the share of days the actual came in >= 2 C above
+    # the de-biased Open-Meteo 11:00-17:00 max. They measure the same thing by different
+    # routes, so a large disagreement means at least one of them is wrong about a station
+    # the board is scoring every night. Bucket rounding makes the continuous measure sit
+    # somewhat BELOW the bucket one, so only gross divergence is reported.
+    tail_conflict = []
+    if os.path.exists(latest):
+        try:
+            doc = json.load(open(latest))
+            for slug, st in (doc.get("stations") or {}).items():
+                native = st.get("resid_ge2_share")
+                bucket = ((doc.get("tails") or {}).get(slug) or {}).get("p_eq2")
+                if native is None or not bucket:
+                    continue
+                ratio = native / bucket
+                if ratio >= 1.5 and native >= 0.08:
+                    tail_conflict.append({"city": slug, "kind": "understated",
+                                          "bucket": bucket, "native": native,
+                                          "ratio": round(ratio, 2)})
+                elif ratio <= 0.4 and bucket >= 0.08:
+                    tail_conflict.append({"city": slug, "kind": "overstated",
+                                          "bucket": bucket, "native": native,
+                                          "ratio": round(ratio, 2)})
+        except Exception as e:
+            warns.append(f"tail cross-check failed: {e}")
+    under = [c for c in tail_conflict if c["kind"] == "understated"]
+    over  = [c for c in tail_conflict if c["kind"] == "overstated"]
+    if under:
+        warns.append("tail may be UNDERSTATED at " +
+                     ", ".join(f"{c['city']} ({c['bucket']*100:.1f}% vs {c['native']*100:.1f}%)"
+                               for c in sorted(under, key=lambda c: -c["ratio"])[:5]) +
+                     " — these rows can be selected while carrying more risk than scored")
+    if over:
+        warns.append("tail may be OVERSTATED at " +
+                     ", ".join(f"{c['city']} ({c['bucket']*100:.1f}% vs {c['native']*100:.1f}%)"
+                               for c in sorted(over, key=lambda c: c["ratio"])[:5]) +
+                     " — the board may be excluding rows that are not actually risky")
+
     # ---- 6b. did a board actually get built and logged? --------------------
     y = date.today() - timedelta(days=1)
     if not os.path.exists(os.path.join(ROOT, "predictions", f"{y.isoformat()}.json")):
@@ -246,6 +286,7 @@ def main():
         "board_size": size,
         "gates": gates_block,
         "pipeline": pipeline,
+        "tail_conflict": tail_conflict,
         "exclusions": exclusions,
         "halts": halts,
         "warnings": warns,
@@ -276,6 +317,16 @@ def main():
               "| band | range | n | hits | expected |", "|---|---|---|---|---|"]
         L += [f"| {t['band']} | {t['range'][0]*100:.1f}-{t['range'][1]*100:.1f}% | "
               f"{t['n']} | {t['hits']} | {t['expected']} |" for t in terciles]
+        L += [""]
+    if tail_conflict:
+        L += ["## Two estimates of the same risk disagree", "",
+              "`bt_daily` bucket tail vs the forecast-native share of days the actual came",
+              "in >= 2 C above the de-biased forecast. Bucket rounding puts the native figure",
+              "somewhat lower by construction, so only gross divergence is listed.", "",
+              "| city | bucket tail | forecast-native | ratio | |", "|---|---|---|---|---|"]
+        L += [f"| {c['city']} | {c['bucket']*100:.1f}% | {c['native']*100:.1f}% | "
+              f"{c['ratio']:.2f}x | {c['kind']} |"
+              for c in sorted(tail_conflict, key=lambda c: -c["ratio"])]
         L += [""]
     if exclusions:
         L += ["## Manual exclusions", ""]
