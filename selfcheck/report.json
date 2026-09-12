@@ -27,13 +27,63 @@
   "rate": 0.0676,
   "t": -0.07
  },
- "gates": [],
- "generated_utc": "2026-09-12T15:40:57+00:00",
+ "gates": [
+  {
+   "adopted": "2026-09-06",
+   "name": "k* = 2",
+   "provisional": false,
+   "reason": "measured exceedance at +2 under the 8.5% break-even",
+   "threshold": 2
+  },
+  {
+   "adopted": "2026-09-09",
+   "expires": "2026-10-21",
+   "name": "mode share >= 35%",
+   "provisional": true,
+   "reason": "flat ladders make '+2' meaningless; never backtested, same n=1 origin as the ceiling",
+   "threshold": 0.35
+  },
+  {
+   "adopted": "2026-09-06",
+   "name": "depth >= $600",
+   "provisional": false,
+   "reason": "below this the book cannot be worked",
+   "threshold": 600
+  },
+  {
+   "adopted": "2026-09-06",
+   "name": "closed top bucket",
+   "provisional": false,
+   "reason": "an open end prices an unbounded tail as one bucket; vindicated by Karachi 2026-09-12",
+   "threshold": null
+  },
+  {
+   "adopted": "2026-09-06",
+   "name": "multiple > 1.00",
+   "provisional": false,
+   "reason": "a price at or below the measured tail is not a trade at any rank",
+   "threshold": 1.0
+  },
+  {
+   "adopted": "2026-09-09",
+   "expires": "2026-10-21",
+   "name": "multiple <= 2.5x",
+   "provisional": true,
+   "reason": "adopted from Munich alone, n=1; lapses by default under the ratchet rule",
+   "threshold": 2.5
+  }
+ ],
+ "generated_utc": "2026-09-12T17:55:56+00:00",
  "halts": [
   "selected rows: 3 of 7 settled at +2 against 0.35 expected \u2014 P(>=3 | tails correct) = 0.37%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained"
  ],
- "pipeline": {},
+ "pipeline": {
+  "inputs_age_hours": 0.0,
+  "snapshot": "d97b44c4b5f2",
+  "stations": 38,
+  "tails": 38
+ },
  "repeats": [
   {
    "city": "shenzhen",
@@ -90,7 +140,6 @@
  ],
  "warnings": [
   "ordering: the low-tail band produced more +2 settlements than the high-tail band \u2014 the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet",
-  "no data/latest.json \u2014 the bot export has not run; the board is running without per-station de-bias offsets",
   "no predictions/2026-09-11.json \u2014 either no board was built for that day, or it was built and never logged. An unlogged board cannot be checked."
  ]
 }

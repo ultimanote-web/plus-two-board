@@ -1,6 +1,6 @@
 # HALTED
 
-_self-check 2026-09-12T15:40:57+00:00_
+_self-check 2026-09-12T17:55:56+00:00_
 
 ## Do not trade the next board
 
@@ -29,10 +29,13 @@ _self-check 2026-09-12T15:40:57+00:00_
 
 - **shenzhen** — two +2 settlements in three days, both exact (review by 2026-10-10)
 
+## Pipeline
+
+- inputs 0.0 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+
 ## Warnings
 
 - ordering: the low-tail band produced more +2 settlements than the high-tail band — the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet
-- no data/latest.json — the bot export has not run; the board is running without per-station de-bias offsets
 - no predictions/2026-09-11.json — either no board was built for that day, or it was built and never logged. An unlogged board cannot be checked.
 
 ---
