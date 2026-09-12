@@ -73,13 +73,13 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-09-12T17:55:56+00:00",
+ "generated_utc": "2026-09-12T18:06:19+00:00",
  "halts": [
   "selected rows: 3 of 7 settled at +2 against 0.35 expected \u2014 P(>=3 | tails correct) = 0.37%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 0.0,
+  "inputs_age_hours": 0.2,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
@@ -106,6 +106,71 @@
   "rate": 0.4286
  },
  "status": "HALTED",
+ "tail_conflict": [
+  {
+   "bucket": 0.1466,
+   "city": "amsterdam",
+   "kind": "overstated",
+   "native": 0.0155,
+   "ratio": 0.11
+  },
+  {
+   "bucket": 0.1302,
+   "city": "beijing",
+   "kind": "overstated",
+   "native": 0.0207,
+   "ratio": 0.16
+  },
+  {
+   "bucket": 0.0781,
+   "city": "chengdu",
+   "kind": "understated",
+   "native": 0.1503,
+   "ratio": 1.92
+  },
+  {
+   "bucket": 0.1302,
+   "city": "helsinki",
+   "kind": "overstated",
+   "native": 0.0155,
+   "ratio": 0.12
+  },
+  {
+   "bucket": 0.0833,
+   "city": "kuala-lumpur",
+   "kind": "understated",
+   "native": 0.1399,
+   "ratio": 1.68
+  },
+  {
+   "bucket": 0.127,
+   "city": "manila",
+   "kind": "overstated",
+   "native": 0.0363,
+   "ratio": 0.29
+  },
+  {
+   "bucket": 0.1042,
+   "city": "singapore",
+   "kind": "overstated",
+   "native": 0.0104,
+   "ratio": 0.1
+  },
+  {
+   "bucket": 0.1474,
+   "city": "toronto",
+   "kind": "overstated",
+   "native": 0.0311,
+   "ratio": 0.21
+  },
+  {
+   "bucket": 0.1309,
+   "city": "warsaw",
+   "kind": "overstated",
+   "native": 0.0311,
+   "ratio": 0.24
+  }
+ ],
  "terciles": [
   {
    "band": "low",
@@ -140,6 +205,8 @@
  ],
  "warnings": [
   "ordering: the low-tail band produced more +2 settlements than the high-tail band \u2014 the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet",
+  "tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) \u2014 these rows can be selected while carrying more risk than scored",
+  "tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) \u2014 the board may be excluding rows that are not actually risky",
   "no predictions/2026-09-11.json \u2014 either no board was built for that day, or it was built and never logged. An unlogged board cannot be checked."
  ]
 }
