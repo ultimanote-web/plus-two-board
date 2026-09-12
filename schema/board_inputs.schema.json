@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/plus-two-board/board_inputs.schema.json",
+  "title": "board_inputs",
+  "description": "Nightly export from wx.db. Model inputs only — never fills, sizes or account state.",
+  "type": "object",
+  "required": ["schema", "generated_utc", "code_version", "tail_snapshot_id", "stations", "tails"],
+  "additionalProperties": false,
+  "properties": {
+    "schema":            { "const": 1 },
+    "generated_utc":     { "type": "string", "format": "date-time" },
+    "code_version":      { "type": "string", "minLength": 1 },
+    "tail_snapshot_id":  {
+      "type": "string", "minLength": 1,
+      "description": "Immutable id of the bt_daily tail snapshot. Rolling back means naming a previous one."
+    },
+    "backtest": {
+      "type": "object",
+      "properties": {
+        "rows":        { "type": "integer" },
+        "stations":    { "type": "integer" },
+        "date_from":   { "type": "string" },
+        "date_to":     { "type": "string" },
+        "window_days": { "type": "integer" },
+        "debias_window_days": { "type": "integer" },
+        "lead_hours":  { "type": "number" }
+      }
+    },
+
+    "stations": {
+      "type": "object",
+      "description": "Keyed by city slug as used in the Polymarket event slug.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["icao", "lat", "lon", "debias_c", "debias_sign"],
+        "properties": {
+          "icao":     { "type": "string", "pattern": "^[A-Z]{4}$" },
+          "lat":      { "type": "number", "minimum": -90,  "maximum": 90 },
+          "lon":      { "type": "number", "minimum": -180, "maximum": 180 },
+          "debias_c": {
+            "type": "number",
+            "description": "Per-station offset in °C, interpreted per debias_sign."
+          },
+          "debias_sign": {
+            "enum": ["actual_minus_forecast", "forecast_minus_actual"],
+            "description": "REQUIRED, no default. actual_minus_forecast: positive means the station reads hotter than Open-Meteo predicted, so the de-biased forecast is fcst + debias_c."
+          },
+          "debias_n":      { "type": "integer", "minimum": 1 },
+          "debias_method": { "type": "string" },
+          "debias_asof":   { "type": "string" },
+          "resolution_url":{ "type": "string" },
+          "verified_utc":  { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+
+    "tails": {
+      "type": "object",
+      "description": "Measured, from bt_daily. Never re-forecast — read.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["n", "p_eq2", "p_ge2", "kstar", "lo", "hi"],
+        "properties": {
+          "n":     { "type": "integer", "minimum": 1 },
+          "sd":    { "type": "number" },
+          "p_eq2": { "type": "number", "minimum": 0, "maximum": 1 },
+          "p_ge2": { "type": "number", "minimum": 0, "maximum": 1 },
+          "kstar": { "type": "integer", "minimum": 0 },
+          "lo":    { "type": "number", "minimum": 0, "maximum": 1, "description": "Wilson 95% lower" },
+          "hi":    { "type": "number", "minimum": 0, "maximum": 1, "description": "Wilson 95% upper" }
+        }
+      }
+    },
+
+    "settled": {
+      "type": "object",
+      "description": "date -> { city slug: whole-degree actual max }. Optional; the self-check also scrapes this.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": { "type": "integer" }
+      }
+    },
+
+    "gates": {
+      "type": "array",
+      "description": "Optional. Lets the self-check enforce provisional-gate expiry.",
+      "items": {
+        "type": "object",
+        "required": ["name", "adopted"],
+        "properties": {
+          "name":        { "type": "string" },
+          "threshold":   {},
+          "adopted":     { "type": "string" },
+          "provisional": { "type": "boolean" },
+          "expires":     { "type": "string" },
+          "reason":      { "type": "string" }
+        }
+      }
+    }
+  }
+}

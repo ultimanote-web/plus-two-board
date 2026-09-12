@@ -1,0 +1,13 @@
+{
+  "_comment": "Manual exclusions. A city listed here is ineligible regardless of score. Every entry needs a review_by date and lapses automatically after it — an exclusion with no expiry is a ratchet, and section 7 of the skill exists because of those. build_predictions.py reads this; check.py reports it.",
+  "cities": [
+    {
+      "city": "shenzhen",
+      "reason": "two +2 settlements in three days, both exact",
+      "added": "2026-09-12",
+      "review_by": "2026-10-10",
+      "detail": "Sep 10 mode 31 -> actual 33; Sep 12 mode 32 -> actual 34. On Sep 12 Open-Meteo forecast the ZGSZ Bao'an max at 31.1 C with 2.6 mm rain under 89% cloud and the station read 34 C: a +2.9 C error in the hot direction on a day forecast wet and overcast. Station verified against the market text (weather.gov/wrh/timeseries?site=zgsz), so this is forecast bias, not a station mismatch.",
+      "clears_when": "the de-biased forecast reproduces the last 30 days of ZGSZ maxima to within the residual spread bt_daily assumes, or bt_daily is re-cut for this station and the tail rises to match what has been observed"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+name: selfcheck
+
+on:
+  schedule:
+    # 06:00 UTC — every city's local day has closed by ~04:00 UTC (Toronto is the
+    # last), and Gamma has resolved most of them by then.
+    - cron: "0 6 * * *"
+    # 16:00 UTC — stragglers. The market text allows resolution as late as 11:59 PM ET
+    # the following day, so one run is not enough. The fetch skips city-days already
+    # in the log, so the second pass only ever adds.
+    - cron: "0 16 * * *"
+  push:
+    paths: ["predictions/**", "settled/**", "log/**", "selfcheck/**", "data/**"]
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Trading day to fetch (YYYY-MM-DD). Blank = yesterday UTC."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Gamma is a public API and the runner has internet, so no secrets are needed.
+      # Never fails the job: a missing settlement must not masquerade as a tripwire.
+      - name: Fetch settlements
+        continue-on-error: true
+        run: |
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            python3 selfcheck/fetch_settlements.py --date "${{ github.event.inputs.date }}"
+          else
+            python3 selfcheck/fetch_settlements.py
+          fi
+
+      - name: Commit the record
+        run: |
+          git config user.name  "selfcheck"
+          git config user.email "selfcheck@users.noreply.github.com"
+          git add settled log || true
+          git diff --cached --quiet || git commit -m "settlements: $(date -u +%F)"
+
+      # This step is allowed to fail — that failure IS the halt signal.
+      - name: Run the audit
+        id: audit
+        continue-on-error: true
+        run: python3 selfcheck/check.py
+
+      - name: Publish STATUS.md and report.json
+        run: |
+          git add STATUS.md selfcheck/report.json || true
+          git diff --cached --quiet || git commit -m "selfcheck: $(date -u +%F)"
+          git push || true
+
+      - name: Summary
+        run: cat STATUS.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Re-raise the audit result last, so STATUS.md is always published first.
+      - name: Fail on a tripwire
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo "::error::self-check HALTED — see STATUS.md"
+          exit 1

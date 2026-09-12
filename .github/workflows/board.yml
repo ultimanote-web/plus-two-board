@@ -1,0 +1,75 @@
+name: board
+
+# Builds the deterministic half of tomorrow's board and commits it to predictions/.
+# Runs on GitHub rather than the droplet so the droplet needs exactly one cron —
+# the wx.db export. Everything downstream of that lives here.
+#
+# Caveat worth knowing: GitHub's scheduled runs are best-effort and can be delayed
+# by tens of minutes under load. The prices in predictions/ are therefore a snapshot
+# at an approximate time, not an exact one. That is fine for research logging and is
+# NOT fine as a fill reference — verify every ladder against the live book.
+
+on:
+  schedule:
+    - cron: "30 4 * * *"      # 00:30 ET — after the day's settlements, before the board
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Trading day to build (YYYY-MM-DD). Blank = tomorrow UTC."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Refuse to build while halted
+        run: |
+          if [ -f STATUS.md ] && head -1 STATUS.md | grep -q HALTED; then
+            echo "::warning::self-check reports HALTED — building the field for the record, "\
+                 "but no selection should be traded from it"
+            echo "HALTED=1" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build predictions
+        run: |
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            python3 bot/build_predictions.py --for-date "${{ github.event.inputs.date }}"
+          else
+            python3 bot/build_predictions.py
+          fi
+
+      - name: Commit
+        run: |
+          git config user.name  "board"
+          git config user.email "board@users.noreply.github.com"
+          git add predictions
+          git diff --cached --quiet || git commit -m "board: $(date -u -d tomorrow +%F)"
+          git push || true
+
+      - name: Summary
+        run: |
+          f=$(ls -t predictions/*.json | head -1)
+          python3 - "$f" >> "$GITHUB_STEP_SUMMARY" <<'PY'
+          import json, sys
+          d = json.load(open(sys.argv[1]))
+          print(f"## Board for {d['date']}\n")
+          print(f"- field **{d['field']}**, selected **{d['selected']}**, "
+                f"eligible but unranked **{d['eligible_unranked']}**")
+          print(f"- snapshot `{d['snapshot']}`, de-bias applied: **{d['debias_applied']}**")
+          if d.get("exclusions"):
+              print(f"- manually excluded: {', '.join(d['exclusions'])}")
+          print("\n| # | city | stamp | mult | tail | gap |")
+          print("|---|---|---|---|---|---|")
+          for r in d["rows"][:10]:
+              g = f"{r['gap']:+.1f}" if r["gap"] is not None else "—"
+              print(f"| {r['rank']} | {r['city']} | {r['stamp']} | "
+                    f"{r['mult']:.2f}x | {r['tail']*100:.1f}% | {g} |")
+          PY

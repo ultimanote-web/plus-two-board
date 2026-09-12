@@ -1,0 +1,61 @@
+{
+ "date": "2026-09-12",
+ "fetched_utc": "2026-09-12T14:20:00+00:00",
+ "resolved": {
+  "chengdu": {
+   "actual": 22,
+   "bucket": "22\u00b0C",
+   "open_ended": false
+  },
+  "chongqing": {
+   "actual": 29,
+   "bucket": "29\u00b0C",
+   "open_ended": false
+  },
+  "karachi": {
+   "actual": 36,
+   "bucket": "36\u00b0C or higher",
+   "open_ended": true
+  },
+  "qingdao": {
+   "actual": 27,
+   "bucket": "27\u00b0C",
+   "open_ended": false
+  },
+  "seoul": {
+   "actual": 23,
+   "bucket": "23\u00b0C",
+   "open_ended": false
+  },
+  "shanghai": {
+   "actual": 28,
+   "bucket": "28\u00b0C",
+   "open_ended": false
+  },
+  "shenzhen": {
+   "actual": 34,
+   "bucket": "34\u00b0C",
+   "open_ended": false
+  },
+  "tel-aviv": {
+   "actual": 32,
+   "bucket": "32\u00b0C",
+   "open_ended": false
+  },
+  "tokyo": {
+   "actual": 23,
+   "bucket": "23\u00b0C",
+   "open_ended": false
+  },
+  "wellington": {
+   "actual": 14,
+   "bucket": "14\u00b0C",
+   "open_ended": false
+  }
+ },
+ "source": "gamma-api.polymarket.com outcomePrices",
+ "unresolved": [
+  "buenos-aires",
+  "paris"
+ ]
+}
