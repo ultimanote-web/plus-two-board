@@ -1,6 +1,6 @@
 # HALTED
 
-_self-check 2026-09-12T18:09:03+00:00_
+_self-check 2026-09-13T04:23:32+00:00_
 
 ## Do not trade the next board
 
@@ -49,14 +49,13 @@ somewhat lower by construction, so only gross divergence is listed.
 
 ## Pipeline
 
-- inputs 0.2 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+- inputs 0.1 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
 
 ## Warnings
 
 - ordering: the low-tail band produced more +2 settlements than the high-tail band — the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet
 - tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) — these rows can be selected while carrying more risk than scored
 - tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) — the board may be excluding rows that are not actually risky
-- no predictions/2026-09-11.json — either no board was built for that day, or it was built and never logged. An unlogged board cannot be checked.
 
 ---
 
