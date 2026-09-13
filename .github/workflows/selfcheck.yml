@@ -54,11 +54,21 @@ jobs:
         continue-on-error: true
         run: python3 selfcheck/check.py
 
+      # The droplet pushes at 04:15 and Actions push minutes later, so a non-fast-forward
+      # is routine. Rebase and retry rather than swallowing it — a `git push || true`
+      # that silently loses the result is worse than no publish at all, because the repo
+      # then shows a stale STATUS.md that looks current.
       - name: Publish STATUS.md and report.json
         run: |
           git add STATUS.md selfcheck/report.json || true
           git diff --cached --quiet || git commit -m "selfcheck: $(date -u +%F)"
-          git push || true
+          for i in 1 2 3; do
+            if git push; then echo "pushed"; exit 0; fi
+            echo "push rejected, rebasing (attempt $i)"
+            git pull --rebase --autostash origin main || true
+            sleep $((i * 5))
+          done
+          echo "::warning::could not publish STATUS.md after 3 attempts"
 
       - name: Summary
         run: cat STATUS.md >> "$GITHUB_STEP_SUMMARY"

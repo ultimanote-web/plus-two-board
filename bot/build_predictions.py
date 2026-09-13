@@ -33,10 +33,19 @@ FEE = 0.05
 WINDOW = (11, 17)
 
 
+# Polymarket's edge rejects urllib's default agent ("Python-urllib/3.12") with a bare
+# 403 — no body, no explanation. Confirmed 2026-09-13: every Gamma call failed from both
+# the droplet and a GitHub runner until this header was set. Identify as a browser.
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+      "Chrome/124.0.0.0 Safari/537.36")
+HEADERS = {"User-Agent": UA, "Accept": "application/json"}
+
+
 def get(url, tries=3, pause=0.3):
+    req = urllib.request.Request(url, headers=HEADERS)
     for i in range(tries):
         try:
-            with urllib.request.urlopen(url, timeout=40) as r:
+            with urllib.request.urlopen(req, timeout=40) as r:
                 time.sleep(pause)
                 return json.loads(r.read().decode())
         except Exception as e:

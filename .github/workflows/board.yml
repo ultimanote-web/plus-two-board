@@ -57,19 +57,4 @@ jobs:
       - name: Summary
         run: |
           f=$(ls -t predictions/*.json | head -1)
-          python3 - "$f" >> "$GITHUB_STEP_SUMMARY" <<'PY'
-          import json, sys
-          d = json.load(open(sys.argv[1]))
-          print(f"## Board for {d['date']}\n")
-          print(f"- field **{d['field']}**, selected **{d['selected']}**, "
-                f"eligible but unranked **{d['eligible_unranked']}**")
-          print(f"- snapshot `{d['snapshot']}`, de-bias applied: **{d['debias_applied']}**")
-          if d.get("exclusions"):
-              print(f"- manually excluded: {', '.join(d['exclusions'])}")
-          print("\n| # | city | stamp | mult | tail | gap |")
-          print("|---|---|---|---|---|---|")
-          for r in d["rows"][:10]:
-              g = f"{r['gap']:+.1f}" if r["gap"] is not None else "—"
-              print(f"| {r['rank']} | {r['city']} | {r['stamp']} | "
-                    f"{r['mult']:.2f}x | {r['tail']*100:.1f}% | {g} |")
-          PY
+          python3 bot/summarize_board.py "$f" >> "$GITHUB_STEP_SUMMARY"

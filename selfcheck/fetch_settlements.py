@@ -21,10 +21,16 @@ MONTHS = ["january", "february", "march", "april", "may", "june",
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+# Polymarket's edge 403s urllib's default agent. See build_predictions.py.
+UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+      "Chrome/124.0.0.0 Safari/537.36")
+
+
 def get(url, tries=3):
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/json"})
     for i in range(tries):
         try:
-            with urllib.request.urlopen(url, timeout=30) as r:
+            with urllib.request.urlopen(req, timeout=30) as r:
                 return json.loads(r.read().decode())
         except Exception as e:
             if i == tries - 1:
