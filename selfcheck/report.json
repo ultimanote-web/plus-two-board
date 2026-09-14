@@ -73,13 +73,13 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-09-13T21:59:55+00:00",
+ "generated_utc": "2026-09-14T04:15:13+00:00",
  "halts": [
   "selected rows: 3 of 8 settled at +2 against 0.37 expected \u2014 P(>=3 | tails correct) = 0.48%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 17.7,
+  "inputs_age_hours": 0.0,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
@@ -206,6 +206,7 @@
  "warnings": [
   "ordering: the low-tail band produced more +2 settlements than the high-tail band \u2014 the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet",
   "tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) \u2014 these rows can be selected while carrying more risk than scored",
-  "tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) \u2014 the board may be excluding rows that are not actually risky"
+  "tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) \u2014 the board may be excluding rows that are not actually risky",
+  "no predictions/2026-09-13.json \u2014 either no board was built for that day, or it was built and never logged. An unlogged board cannot be checked."
  ]
 }
