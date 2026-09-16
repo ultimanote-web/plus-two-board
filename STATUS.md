@@ -1,30 +1,30 @@
 # HALTED
 
-_self-check 2026-09-15T19:32:29+00:00_
+_self-check 2026-09-16T04:15:25+00:00_
 
 ## Do not trade the next board
 
-- selected rows: 3 of 9 settled at +2 against 0.40 expected — P(>=3 | tails correct) = 0.61%, below the 2% halt threshold
+- selected rows: 3 of 14 settled at +2 against 0.55 expected — P(>=3 | tails correct) = 1.60%, below the 2% halt threshold
 - shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) — treat as station-specific until explained
 - karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) — treat as station-specific until explained
 
 ## Selected rows
 
-- 3 of 9 settled at +2 (33%), against 0.4 expected
-- P(>= 3 | tails correct) = 0.61%
-- 95% CI on the realized rate: 12-65%
+- 3 of 14 settled at +2 (21%), against 0.55 expected
+- P(>= 3 | tails correct) = 1.59%
+- 95% CI on the realized rate: 8-48%
 
 ## Whole field
 
-- 6 of 134 at >=+2 (4.5%) against 7.4% predicted, t = -1.26
+- 6 of 170 at >=+2 (3.5%) against 7.5% predicted, t = -1.88
 
 ## Does the tail order the outcomes?
 
 | band | range | n | hits | expected |
 |---|---|---|---|---|
-| low | 2.1-5.2% | 44 | 5 | 1.61 |
-| mid | 5.2-8.3% | 44 | 1 | 2.99 |
-| high | 8.3-15.7% | 46 | 0 | 5.38 |
+| low | 2.1-5.2% | 56 | 5 | 2.04 |
+| mid | 5.2-8.3% | 56 | 1 | 3.82 |
+| high | 8.3-23.2% | 58 | 0 | 6.85 |
 
 ## Two estimates of the same risk disagree
 
@@ -50,7 +50,7 @@ somewhat lower by construction, so only gross divergence is listed.
 
 ## Pipeline
 
-- inputs 15.3 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+- inputs 0.0 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
 
 ## Warnings
 
