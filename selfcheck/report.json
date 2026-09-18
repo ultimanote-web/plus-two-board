@@ -73,14 +73,14 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-09-18T10:54:04+00:00",
+ "generated_utc": "2026-09-18T18:54:34+00:00",
  "halts": [
   "selected rows: 4 of 20 settled at +2 against 0.78 expected \u2014 P(>=4 | tails correct) = 0.67%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained",
   "karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 6.7,
+  "inputs_age_hours": 14.7,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
