@@ -1,6 +1,6 @@
 # HALTED
 
-_self-check 2026-09-19T18:26:48+00:00_
+_self-check 2026-09-19T19:36:02+00:00_
 
 ## Do not trade the next board
 
@@ -47,10 +47,11 @@ somewhat lower by construction, so only gross divergence is listed.
 ## Manual exclusions
 
 - **shenzhen** — two +2 settlements in three days, both exact (review by 2026-10-10)
+- **karachi** — repeat +2 settlements against a 3.8% tail; flagged by check.py since 2026-09-15 and left unactioned for a week (review by 2026-10-17)
 
 ## Pipeline
 
-- inputs 14.2 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+- inputs 15.3 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
 
 ## Warnings
 

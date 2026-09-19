@@ -13,6 +13,15 @@
    "expired": false,
    "reason": "two +2 settlements in three days, both exact",
    "review_by": "2026-10-10"
+  },
+  {
+   "added": "2026-09-19",
+   "city": "karachi",
+   "clears_when": "the asymmetry/tail work concludes, or OPKC accumulates 30 further settled days with no +2, whichever is first",
+   "detail": "Sep 12 was a selected row: mode 34, target 36+, settled 36 \u2014 an exact +2 at a quoted 0.12 bid and a stated tail of 3.8%, multiple 3.0x. The self-check has carried karachi in its repeat-offender list since Sep 15 and nothing was done about it, which is the failure mode an exclusions file exists to prevent. Excluded now on the record rather than on the diagnosis: the station may be fine and the tail wrong, and that is exactly what review_by is for. Note that OPKC is one of the stations where bt_daily reports a low tail (3.8%) while losing \u2014 the inverted-tercile pattern in STATUS.md.",
+   "expired": false,
+   "reason": "repeat +2 settlements against a 3.8% tail; flagged by check.py since 2026-09-15 and left unactioned for a week",
+   "review_by": "2026-10-17"
   }
  ],
  "field": {
@@ -73,14 +82,14 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-09-19T18:26:48+00:00",
+ "generated_utc": "2026-09-19T19:36:02+00:00",
  "halts": [
   "selected rows: 5 of 25 settled at +2 against 1.00 expected \u2014 P(>=5 | tails correct) = 0.27%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained",
   "karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 14.2,
+  "inputs_age_hours": 15.3,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
