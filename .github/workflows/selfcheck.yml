@@ -73,6 +73,18 @@ jobs:
       - name: Summary
         run: cat STATUS.md >> "$GITHUB_STEP_SUMMARY"
 
+      # Reported every run, decided by nobody. It is a measurement in progress and
+      # prints its own power warning until it has ~150 joined city-days.
+      - name: Asymmetry pricing
+        continue-on-error: true
+        run: |
+          {
+            echo ""
+            echo "---"
+            echo ""
+            python3 research/analyze_asymmetry.py
+          } >> "$GITHUB_STEP_SUMMARY"
+
       # Re-raise the audit result last, so STATUS.md is always published first.
       - name: Fail on a tripwire
         if: steps.audit.outcome == 'failure'

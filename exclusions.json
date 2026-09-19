@@ -8,6 +8,14 @@
       "review_by": "2026-10-10",
       "detail": "Sep 10 mode 31 -> actual 33; Sep 12 mode 32 -> actual 34. On Sep 12 Open-Meteo forecast the ZGSZ Bao'an max at 31.1 C with 2.6 mm rain under 89% cloud and the station read 34 C: a +2.9 C error in the hot direction on a day forecast wet and overcast. Station verified against the market text (weather.gov/wrh/timeseries?site=zgsz), so this is forecast bias, not a station mismatch.",
       "clears_when": "the de-biased forecast reproduces the last 30 days of ZGSZ maxima to within the residual spread bt_daily assumes, or bt_daily is re-cut for this station and the tail rises to match what has been observed"
+    },
+    {
+      "city": "karachi",
+      "reason": "repeat +2 settlements against a 3.8% tail; flagged by check.py since 2026-09-15 and left unactioned for a week",
+      "added": "2026-09-19",
+      "review_by": "2026-10-17",
+      "detail": "Sep 12 was a selected row: mode 34, target 36+, settled 36 — an exact +2 at a quoted 0.12 bid and a stated tail of 3.8%, multiple 3.0x. The self-check has carried karachi in its repeat-offender list since Sep 15 and nothing was done about it, which is the failure mode an exclusions file exists to prevent. Excluded now on the record rather than on the diagnosis: the station may be fine and the tail wrong, and that is exactly what review_by is for. Note that OPKC is one of the stations where bt_daily reports a low tail (3.8%) while losing — the inverted-tercile pattern in STATUS.md.",
+      "clears_when": "the asymmetry/tail work concludes, or OPKC accumulates 30 further settled days with no +2, whichever is first"
     }
   ]
 }

@@ -46,13 +46,31 @@ jobs:
             python3 bot/build_predictions.py
           fi
 
+      # Runs whether or not the board built, and covers the whole field rather than
+      # the selected rows — a price series conditioned on the selector is the one
+      # sample that cannot answer whether the selector is wrong. Never fails the job.
+      - name: Capture ladders
+        continue-on-error: true
+        run: |
+          if [ -n "${{ github.event.inputs.date }}" ]; then
+            python3 selfcheck/capture_ladders.py --date "${{ github.event.inputs.date }}"
+          else
+            python3 selfcheck/capture_ladders.py
+          fi
+
       - name: Commit
         run: |
           git config user.name  "board"
           git config user.email "board@users.noreply.github.com"
-          git add predictions
+          git add predictions ladders log || true
           git diff --cached --quiet || git commit -m "board: $(date -u -d tomorrow +%F)"
-          git push || true
+          for i in 1 2 3; do
+            if git push; then echo "pushed"; exit 0; fi
+            echo "push rejected, rebasing (attempt $i)"
+            git pull --rebase --autostash origin main || true
+            sleep $((i * 5))
+          done
+          echo "::warning::could not publish the board after 3 attempts"
 
       - name: Summary
         run: |

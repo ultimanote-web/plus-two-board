@@ -32,8 +32,11 @@ data/latest.json         convenience copy of the newest
 predictions/YYYY-MM-DD.json   what the board said, before the day ran
 settled/YYYY-MM-DD.json       what the stations actually read
 log/settlements.csv      append-only. never rewritten, never rolled back.
+ladders/YYYY-MM-DD.json  every bucket of every city's book at board time — raw
+log/ladders.csv          derived one-row-per-city-day summary of the above
 selfcheck/report.json    output of the audit — the board reads this too
 STATUS.md                human-readable: current calibration and halt state
+research/               pre-registrations and results. see below.
 ```
 
 `data/` is date-stamped rather than a single rolling file for two reasons: the board's
@@ -64,6 +67,14 @@ self-check refuses a file without it.
 Pulls resolved outcomes for a date from Polymarket Gamma into `settled/YYYY-MM-DD.json`
 and appends to `log/settlements.csv`. Skips city-days already logged, so re-running is
 safe.
+
+### `selfcheck/capture_ladders.py` — runs on GitHub, inside the board job
+
+Records the full price ladder for **every** city, including rows no gate would pass.
+`predictions/` already stores a price, but only for the +2 bucket of rows that survived
+the gates — the selected subset, which is the one sample that cannot be used to ask
+whether the selector is wrong. Raw into `ladders/`, derived into `log/ladders.csv`,
+idempotent on `(date, city)`.
 
 ### `selfcheck/check.py` — runs on GitHub
 
@@ -208,6 +219,26 @@ negative number there, the sign is backwards and every model gap on the board is
 ### Step 5 — watch one number for a week
 
 `STATUS.md`. Nothing else. It is the only artifact that says whether to trade.
+
+---
+
+## `research/` — what has been tested, and what is being tested
+
+Every file here is either a pre-registration written before its data existed, or the
+result read against thresholds fixed in that registration. A result with no matching
+pre-registration is a story, not a finding.
+
+| file | status |
+|---|---|
+| `prereg-tail-adjudication.md` | registered 2026-09-13; **read 2026-09-20** at k ≥ 5 / k ≤ 1 |
+| `gap-test-result.md` | run 2026-09-19. Gap trading dead (slope −0.04). Mode calibrated (46.1% vs 45.7%). Left skew found: P(dev ≤ −2) = 7.0% against P(dev ≥ +2) = 3.7% |
+| `prereg-asymmetry-pricing.md` | registered 2026-09-19; **read 2026-10-19** at 150 joined city-days |
+| `analyze_asymmetry.py` | runs with every self-check; prints its own underpowered warning until then |
+
+The +2 board is **halted** and nothing above changes that. The diagnosis was adverse
+selection built into the selection rule — requiring `break-even ÷ tail > 1` selects
+exactly the rows where the price implies more risk than `bt_daily` does, and over 207
+city-days the price was right. No gate repairs this, because the gate *is* the selector.
 
 ---
 
