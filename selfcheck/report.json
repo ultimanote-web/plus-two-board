@@ -1,8 +1,8 @@
 {
  "board_size": {
-  "days": 7,
-  "mean_picks": 2.86,
-  "validation_horizon_years": 2.4
+  "days": 8,
+  "mean_picks": 3.12,
+  "validation_horizon_years": 2.2
  },
  "exclusions": [
   {
@@ -17,15 +17,15 @@
  ],
  "field": {
   "ci": [
-   0.0197,
-   0.0692
+   0.0223,
+   0.0697
   ],
-  "expected": 18.19,
-  "hits": 9,
-  "mean_tail": 0.0752,
-  "n": 242,
-  "rate": 0.0372,
-  "t": -2.15
+  "expected": 20.93,
+  "hits": 11,
+  "mean_tail": 0.0756,
+  "n": 277,
+  "rate": 0.0397,
+  "t": -2.17
  },
  "gates": [
   {
@@ -73,14 +73,14 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-09-18T18:54:34+00:00",
+ "generated_utc": "2026-09-19T04:15:25+00:00",
  "halts": [
-  "selected rows: 4 of 20 settled at +2 against 0.78 expected \u2014 P(>=4 | tails correct) = 0.67%, below the 2% halt threshold",
+  "selected rows: 5 of 25 settled at +2 against 1.00 expected \u2014 P(>=5 | tails correct) = 0.27%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained",
   "karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 14.7,
+  "inputs_age_hours": 0.0,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
@@ -104,14 +104,14 @@
  ],
  "selected": {
   "ci": [
-   0.0807,
-   0.416
+   0.0886,
+   0.3913
   ],
-  "expected": 0.78,
-  "losses": 4,
-  "mean_tail": 0.0388,
-  "n": 20,
-  "p_value": 0.00667,
+  "expected": 1.0,
+  "losses": 5,
+  "mean_tail": 0.0398,
+  "n": 25,
+  "p_value": 0.00273,
   "rate": 0.2
  },
  "status": "HALTED",
@@ -183,9 +183,9 @@
  "terciles": [
   {
    "band": "low",
-   "expected": 2.96,
+   "expected": 3.41,
    "hits": 6,
-   "n": 80,
+   "n": 92,
    "range": [
     0.0208,
     0.0517
@@ -193,9 +193,9 @@
   },
   {
    "band": "mid",
-   "expected": 5.57,
-   "hits": 2,
-   "n": 80,
+   "expected": 6.48,
+   "hits": 4,
+   "n": 92,
    "range": [
     0.052,
     0.0833
@@ -203,9 +203,9 @@
   },
   {
    "band": "high",
-   "expected": 9.65,
+   "expected": 11.03,
    "hits": 1,
-   "n": 82,
+   "n": 93,
    "range": [
     0.0833,
     0.2316
@@ -213,7 +213,7 @@
   }
  ],
  "warnings": [
-  "field: predicted 7.5% sits above the realized interval [2.0-6.9] \u2014 tails may be too conservative",
+  "field: predicted 7.6% sits above the realized interval [2.2-7.0] \u2014 tails may be too conservative",
   "ordering: the low-tail band produced more +2 settlements than the high-tail band \u2014 the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet",
   "tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) \u2014 these rows can be selected while carrying more risk than scored",
   "tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) \u2014 the board may be excluding rows that are not actually risky"
