@@ -1,7 +1,7 @@
 {
  "builder": "build_debias/1.0.0",
  "forecast_definition": "Open-Meteo archive, hourly temperature_2m, max over local 11:00-17:00",
- "generated_utc": "2026-09-13T03:40:55+00:00",
+ "generated_utc": "2026-09-20T03:40:55+00:00",
  "schema": 1,
  "seasonal_window": {
   "centre_doy": 274,
