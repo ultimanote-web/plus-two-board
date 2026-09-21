@@ -133,9 +133,37 @@ either alone; if they disagree, neither is adopted.
 
 ## Outcome
 
-_To be completed after 2026-09-20. Leave blank until then._
+_Read 2026-09-21 against the rule above. Nothing in this file was changed before reading._
 
-- Cohort-days observed:
-- Hits observed (k):
-- Per-city breakdown:
-- Conclusion under the rule above:
+- **Cohort-days observed: 49 of 49.** No proration needed — every city listed every day, every day resolved.
+- **Hits observed: k = 1.**
+- **Per-city breakdown:** Amsterdam 0/7, Beijing 0/7, Helsinki 0/7, Manila 0/7,
+  Singapore **1**/7, Toronto 0/7, Warsaw 0/7. The single event was Singapore on
+  2026-09-19, mode 32 → actual 34.
+- **Secondary cohort (recorded, not decided):** Chengdu 0/7, Kuala Lumpur 0/6,
+  k = 0 over 13 cohort-days. H_bucket prorated 1.05, H_native 1.88. Reported as
+  registered; no decision taken.
+
+### Conclusion under the rule
+
+k = 1 falls in the **k ≤ 1** band: **H_native is supported.** `bt_daily`'s bucket tails
+are inflated at these seven stations. Expected counts were 6.42 under H_bucket and 1.12
+under H_native; P(k ≤ 1 | H_bucket) = 1.2%.
+
+Weakness 2 — clustering — does not bite here. One event at one city on one date cannot
+be a synoptic artefact, and the rule's "driven entirely by one city" clause applies to a
+*high* count, not to a floor of one. The result is read as registered.
+
+### What this does not do
+
+It does not unhalt anything, and the registration said so in advance. It establishes
+that one input is wrong, not that the strategy is right. Note the direction: H_native
+makes the board **more permissive**, which is the branch the registration flagged as
+where wishful thinking lives. The thresholds were fixed on 2026-09-13 precisely so that
+this reading could not be argued into a licence.
+
+Separately, and more damagingly for any tail-based selector: see
+`research/no-calm-cities.md`, read the same day. Over 349 settled city-days the
+per-city +2 rates are statistically indistinguishable from a single common rate of
+4.0%. Replacing an inflated per-city tail with a better per-city tail does not help if
+there is no per-city signal to estimate.
