@@ -73,9 +73,9 @@ jobs:
       - name: Summary
         run: cat STATUS.md >> "$GITHUB_STEP_SUMMARY"
 
-      # Reported every run, decided by nobody. It is a measurement in progress and
-      # prints its own power warning until it has ~150 joined city-days.
-      - name: Asymmetry pricing
+      # Both reported every run, decided by nobody. Each prints its own power warning
+      # and refuses to conclude below the sample its registration fixed.
+      - name: Registered measurements
         continue-on-error: true
         run: |
           {
@@ -83,6 +83,10 @@ jobs:
             echo "---"
             echo ""
             python3 research/analyze_asymmetry.py
+            echo ""
+            echo "---"
+            echo ""
+            python3 research/analyze_late_day.py
           } >> "$GITHUB_STEP_SUMMARY"
 
       # Re-raise the audit result last, so STATUS.md is always published first.

@@ -1,0 +1,82 @@
+name: intraday
+
+# Price and thermometer together, four times a day.
+#
+# The board captures once, ~30 hours before resolution. That is the horizon where the
+# market has already measured out calibrated. This workflow exists to measure a
+# different horizon — inside the local afternoon, where the day's maximum is partly
+# observable and the forecast has been superseded by a reading.
+#
+# Each run keys every city to its OWN local date, so Tokyo's live market and Toronto's
+# live market are both captured correctly from a single UTC clock. 00/06/12/18 UTC
+# gives every longitude at least one observation in its afternoon.
+#
+# This workflow NEVER trades and never selects. It collects.
+
+on:
+  schedule:
+    - cron: "5 0 * * *"
+    - cron: "5 6 * * *"
+    - cron: "5 12 * * *"
+    - cron: "5 18 * * *"
+  workflow_dispatch:
+    inputs:
+      cities:
+        description: "Comma-separated slugs. Blank = every city."
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  # Four runs a day all committing to the same branch; let them queue rather than race.
+  group: intraday
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Never fails the job. A missed capture is a gap in a research series, not an
+      # incident, and a red X here would train everyone to ignore red X's.
+      - name: Capture
+        continue-on-error: true
+        run: |
+          if [ -n "${{ github.event.inputs.cities }}" ]; then
+            python3 selfcheck/capture_intraday.py --cities "${{ github.event.inputs.cities }}"
+          else
+            python3 selfcheck/capture_intraday.py
+          fi
+
+      - name: Commit
+        run: |
+          git config user.name  "intraday"
+          git config user.email "intraday@users.noreply.github.com"
+          git add ladders log || true
+          git diff --cached --quiet && { echo "nothing captured"; exit 0; }
+          git commit -m "intraday: $(date -u +'%F %H:%Mz')"
+          for i in 1 2 3; do
+            if git push; then echo "pushed"; exit 0; fi
+            echo "push rejected, rebasing (attempt $i)"
+            git pull --rebase --autostash origin main || true
+            sleep $((i * 5))
+          done
+          echo "::warning::could not publish the intraday capture after 3 attempts"
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Intraday capture"
+            echo ""
+            if [ -f log/intraday.csv ]; then
+              echo "rows in log/intraday.csv: $(( $(wc -l < log/intraday.csv) - 1 ))"
+            else
+              echo "no log/intraday.csv yet"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

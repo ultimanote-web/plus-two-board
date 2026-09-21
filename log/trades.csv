@@ -1,0 +1,5 @@
+date,city,bucket_c,side,price,shares,entered_utc,hours_to_close,local_hour_est,obs_max_known,mode_at_entry,result,pnl_usd,note
+2026-09-21,tokyo,28,sell_yes,0.050,5.00,,20,,,26,win,0.25,"bought NO at 95c; mode 25/26 tied at T-30h capture; entry mode unknown"
+2026-09-21,seoul,29,sell_yes,0.050,5.00,,24,,,27,win,0.25,"bought NO at 95c; mode from T-30h capture"
+2026-09-21,qingdao,30,sell_yes,0.038,4.17,,11,~13,,28,win,0.16,"bought NO at 96.2c; bucket was 13.1% at T-30h capture; north wind + precip recalled, not recorded"
+2026-09-21,wuhan,27,sell_yes,0.076,4.35,,11,~13,,26,win,0.33,"bought NO at 92.4c; +1 bucket not +2; was 23.8% at T-30h capture"

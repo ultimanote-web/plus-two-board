@@ -34,6 +34,9 @@ settled/YYYY-MM-DD.json       what the stations actually read
 log/settlements.csv      append-only. never rewritten, never rolled back.
 ladders/YYYY-MM-DD.json  every bucket of every city's book at board time — raw
 log/ladders.csv          derived one-row-per-city-day summary of the above
+ladders/intraday/DATE/HHMMz.json   ladder + thermometer, four times a day
+log/intraday.csv         derived: price, observed max so far, hours to sunset, headroom
+log/trades.csv           real fills, appended by hand. the only file recording what was DONE.
 selfcheck/report.json    output of the audit — the board reads this too
 STATUS.md                human-readable: current calibration and halt state
 research/               pre-registrations and results. see below.
@@ -76,6 +79,18 @@ the gates — the selected subset, which is the one sample that cannot be used t
 whether the selector is wrong. Raw into `ladders/`, derived into `log/ladders.csv`,
 idempotent on `(date, city)`.
 
+### `selfcheck/capture_intraday.py` — runs on GitHub, 00/06/12/18 UTC
+
+Price **and** thermometer, keyed to each city's own local date. Records the day's
+maximum observed so far at the resolving ICAO (METAR, with Open-Meteo model values as a
+flagged fallback), hours to local sunset, and `headroom_up2` — how many degrees the
+temperature still has to climb for the +2 bucket to hit.
+
+This is the only part of the pipeline that logs what the thermometer actually said at
+the moment of decision, rather than what a model predicted the day before. It exists
+because the one open hypothesis with a physical mechanism behind it — that late-day
+residual prices lag a collapsing uncertainty — cannot be tested without it.
+
 ### `selfcheck/check.py` — runs on GitHub
 
 The audit. Reports, and exits non-zero on a tripwire:
@@ -95,39 +110,29 @@ halted.
 
 ---
 
-## Current state — seeded 2026-09-12
+## Current state — 2026-09-21
 
-**HALTED.** 3 of the 7 rows the board has put forward settled at exactly +2, against
-0.35 expected. P(≥3 | the tails are right) = **0.37%**.
+**HALTED**, and the diagnosis has moved on from where this section started.
 
-| Date | City | Tail | Result |
-|---|---|---|---|
-| Sep 9 | Munich | 8.3% | **lost** |
-| Sep 10 | Shenzhen | 4.7% | **lost** |
-| Sep 10 | Tokyo | 5.2% | won |
-| Sep 10 | Cape Town | 4.5% | won |
-| Sep 12 | Seoul | 2.1% | won |
-| Sep 12 | Shenzhen | 4.7% | **lost** |
-| Sep 12 | Tokyo | 5.2% | won |
+| | |
+|---|---|
+| selected rows settling at +2 | **6 of 34 (18%)** against 1.3 expected, P = 0.17% |
+| whole field | 14 of 349 (4.0%) against 7.6% predicted, t = −2.41 |
+| tail terciles | low band 7 hits/116, high band **3/117 against 13.9 expected** |
 
-There is a common cause and it is one station: **Shenzhen is 2 of the 3 losses**, both
-landing exactly on mode+2. On Sep 12 Open-Meteo forecast the ZGSZ Bao'an max at
-31.1 °C with 2.6 mm of rain under 89% cloud; the station read **34 °C**. A +2.9 °C
-error in the hot direction on a day forecast wet and overcast is the model being wrong
-about the weather type, not the temperature.
+The field settles *calmer* than predicted while the selected subset settles five times
+hotter. That is not a broken station or a bad season — it is **adverse selection built
+into the selection rule**. Requiring `break-even ÷ tail > 1` selects exactly the rows
+where the price implies more risk than `bt_daily` does, and the price keeps being
+right. No gate repairs it, because the gate *is* the selector.
 
-The station is not the problem — the market resolves on
-`weather.gov/wrh/timeseries?site=zgsz`, which is the coordinate the forecast was fetched
-for. So this is forecast bias at that station, which is precisely what the `debias_c`
-offsets in `data/` are for. **That export is the unblock.**
+Four independent tests now agree (see `research/`): gap trading null, the market's mode
+calibrated, cities statistically indistinguishable from one population, and price bands
+tracking their own break-evens across the whole range. The simplest description
+consistent with all four is that these ladders are efficiently priced at board horizon.
 
-Counter-evidence worth keeping: the field as a whole is fine. Over Sep 9–10, 3 of 64
-priced city-days settled at ≥+2 against 4.70 expected. The tails are not broadly
-broken — something specific is.
-
-One gate paid for itself on Sep 12: **open top**. Karachi settled at "36 °C or higher",
-its +2 slot, and would have been a loss. It was the best-priced row on the board at
-3.00×, and the gate excluded it.
+**What is still open:** whether that holds *inside the local afternoon*, when the day's
+maximum is partly observable. Registered, running, reads 2026-10-31.
 
 ---
 
@@ -233,9 +238,14 @@ pre-registration is a story, not a finding.
 | `prereg-tail-adjudication.md` | registered 2026-09-13; **read 2026-09-20** at k ≥ 5 / k ≤ 1 |
 | `gap-test-result.md` | run 2026-09-19. Gap trading dead (slope −0.04). Mode calibrated (46.1% vs 45.7%). Left skew found: P(dev ≤ −2) = 7.0% against P(dev ≥ +2) = 3.7% |
 | `prereg-asymmetry-pricing.md` | registered 2026-09-19; **read 2026-10-19** at 150 joined city-days |
-| `analyze_asymmetry.py` | runs with every self-check; prints its own underpowered warning until then |
+| `no-calm-cities.md` | run 2026-09-21. Cities are one population at 4.0% (homogeneity p = 0.245). City selection is dead. |
+| `gate-value.md` | run 2026-09-21. Every gate measured. Only the price discriminates (AUC 0.78) and it says the market is right; price bands track break-even |
+| `prereg-late-day-residual.md` | registered 2026-09-21; **read 2026-10-31** at 800 qualifying city-days |
+| `analyze_asymmetry.py`, `analyze_late_day.py` | run with every self-check; each refuses to conclude below its registered sample |
 
-The +2 board is **halted** and nothing above changes that. The diagnosis was adverse
+The +2 board is **halted** and nothing above changes that. `log/trades.csv` records
+real fills and is **not** a test of anything — it is self-selected, so it can measure
+what was done but never whether the rule behind it works. The diagnosis was adverse
 selection built into the selection rule — requiring `break-even ÷ tail > 1` selects
 exactly the rows where the price implies more risk than `bt_daily` does, and over 207
 city-days the price was right. No gate repairs this, because the gate *is* the selector.
