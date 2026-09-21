@@ -70,39 +70,60 @@ def proxy_check(ip, settle):
     the day's maximum as observed. Days whose last capture came before the local peak
     will understate it, so a small negative skew here is expected and is not error.
     """
-    seen = defaultdict(lambda: None)
+    seen = {"obs_max": defaultdict(lambda: None), "obs_max_utcday": defaultdict(lambda: None)}
     for r in csv.DictReader(open(ip)):
         if r.get("obs_source") != "metar":
             continue
-        v = f(r.get("obs_max"))
-        if v is None:
-            continue
         k = (r["date"], r["city"])
-        if seen[k] is None or v > seen[k]:
-            seen[k] = v
+        for col in seen:
+            v = f(r.get(col))
+            if v is None:
+                continue
+            if seen[col][k] is None or v > seen[col][k]:
+                seen[col][k] = v
 
-    diffs = defaultdict(int)
-    rows = []
+    settled = []
     for r in csv.DictReader(open(os.path.join(ROOT, "log", "settlements.csv"))):
-        k = (r["date"], r["city"])
         a = f(r.get("actual"))
-        if k in seen and seen[k] is not None and a is not None:
-            rows.append((k, seen[k], a))
-    if not rows:
+        if a is not None:
+            settled.append(((r["date"], r["city"]), a))
+    if not settled:
         return
-    for _, obs, act in rows:
-        diffs[int(round(act - obs))] += 1
-    tot = len(rows)
-    exact = sum(v for d, v in diffs.items() if d == 0)
-    print(f"\n## Proxy check — METAR max vs settled bucket ({tot} city-days)\n")
-    print("| settled − METAR max | n | share |")
-    print("|---|---|---|")
-    for d in sorted(diffs):
-        print(f"| {d:+d} °C | {diffs[d]} | {diffs[d]/tot*100:.1f}% |")
-    print(f"\nExact agreement: **{exact/tot*100:.1f}%**. The markets resolve on the "
-          "published station timeseries, not on this feed; anything below very high "
-          "agreement means an apparent late-day edge may be proxy error rather than "
-          "mispricing.")
+
+    print("\n## Proxy check — METAR max vs the settled bucket\n")
+    print("The market resolves on `weather.gov/wrh/timeseries?site=<icao>` — "
+          '"the highest reading under the Temp column for all times on this day". '
+          "Which *day* that means, local or UTC, is not stated and changes the answer "
+          "for every city off UTC. Both are measured here rather than assumed.\n")
+    print("| day window | n | exact | ±1 °C | worse |")
+    print("|---|---|---|---|---|")
+    best, bestrate = None, -1.0
+    detail = {}
+    for col, label in (("obs_max", "local day"), ("obs_max_utcday", "UTC day")):
+        rows = [(seen[col][k], a) for k, a in settled if seen[col].get(k) is not None]
+        if not rows:
+            continue
+        d = defaultdict(int)
+        for obs, act in rows:
+            d[int(round(act - obs))] += 1
+        tot = len(rows)
+        ex = d.get(0, 0)
+        one = d.get(1, 0) + d.get(-1, 0)
+        print(f"| **{label}** | {tot} | {ex/tot*100:.1f}% | {one/tot*100:.1f}% | "
+              f"{(tot-ex-one)/tot*100:.1f}% |")
+        detail[label] = dict(sorted(d.items()))
+        if ex / tot > bestrate:
+            best, bestrate = label, ex / tot
+    for label, d in detail.items():
+        print(f"\n`{label}` differences (settled − METAR max): "
+              + ", ".join(f"{k:+d}: {v}" for k, v in d.items()))
+    if best:
+        print(f"\nBetter agreement: **{best}** at {bestrate*100:.1f}% exact. "
+              "A day-window mismatch would show up as a systematic one-sided error, "
+              "not as scatter.")
+        if bestrate < 0.95:
+            print("\n> **Below 95% — the registration says report but do not act.** "
+                  "An apparent edge smaller than the proxy error is not an edge.")
 
 
 def main():

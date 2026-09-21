@@ -167,6 +167,28 @@ part of it. Recorded here because amending a registration is exactly the move th
 needs to be on the record, and because the window had not yet opened when this was
 found.
 
+## Amendment 2026-09-21 (second) — which *day* the resolution means
+
+The Qingdao market text reads: "the highest temperature recorded by NOAA at the Qingdao
+Jiaodong International Airport Station in degrees Celsius on 21 Sep '26 ... the highest
+reading under the Temp column for all times on this day", linking
+`weather.gov/wrh/timeseries?site=zsqd`. That page can be read in UTC or in local time and
+**the text does not say which**. For every city off UTC the two windows cover different
+hours, so the choice changes `obs_max` — and a wrong choice would put a silent,
+systematic error under every row in the study.
+
+`obs_max_utcday` is therefore recorded alongside `obs_max`, and `analyze_late_day.py`
+reports the agreement of **both** against the settled bucket. A day-window mismatch
+appears as a one-sided systematic error rather than scatter, so the data decides it.
+The METAR fetch window widens from 18 to 30 hours so that both windows are fully covered.
+
+The resolving station itself is confirmed correct: the market names `site=zsqd` and
+`stations.json` carries ZSQD for Qingdao.
+
+**No threshold, cohort rule or decision changed.** `obs_max` (local day) remains the
+quantity the primary test uses unless the agreement table says otherwise, and if it does
+say otherwise that is a finding to be recorded here before it is acted on.
+
 ## Outcome
 
 _To be completed after 2026-10-31. Leave blank until then._

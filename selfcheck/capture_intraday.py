@@ -54,7 +54,7 @@ UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
       "Chrome/124.0.0.0 Safari/537.36")
 
 COLS = ["date", "city", "icao", "captured_utc", "local_hour", "hours_to_sunset",
-        "obs_source", "obs_n", "obs_max", "obs_latest", "obs_latest_utc",
+        "obs_source", "obs_n", "obs_max", "obs_max_utcday", "obs_latest", "obs_latest_utc",
         "wind_dir", "wind_kt", "precip_mm", "cloud_pct",
         "n_buckets", "book_sum", "mode", "mode_p", "top_open", "bot_open",
         "cum_up2", "cum_dn2", "bid_up2", "ask_up2", "depth_up2",
@@ -171,14 +171,27 @@ def observations(city, st, om, metar, now_utc):
                 hours_to_sunset = round((ss - local.replace(tzinfo=None)).total_seconds() / 3600, 2)
                 break
 
-    rows = [r for r in metar.get(st["icao"].upper(), [])
-            if r["temp"] is not None
-            and datetime.fromtimestamp(r["t"], timezone.utc) >= local_midnight_utc]
+    all_rows = [r for r in metar.get(st["icao"].upper(), []) if r["temp"] is not None]
+    rows = [r for r in all_rows
+            if datetime.fromtimestamp(r["t"], timezone.utc) >= local_midnight_utc]
+
+    # The market text says "the highest reading under the Temp column for all times on
+    # this day" and links weather.gov's station timeseries, which can be read in UTC or
+    # in local time. Which one it means changes obs_max for every city not on UTC, and
+    # guessing would put a silent error under every row. So both are recorded and the
+    # proxy check reports which agrees with the settlements. Measure, don't assume.
+    utc_midnight = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0,
+                                                      microsecond=0)
+    urows = [r for r in all_rows
+             if datetime.fromtimestamp(r["t"], timezone.utc) >= utc_midnight]
+    umax = round(max(r["temp"] for r in urows), 1) if urows else ""
+
     if rows:
         last = rows[-1]
         return {
             "obs_source": "metar", "obs_n": len(rows),
             "obs_max": round(max(r["temp"] for r in rows), 1),
+            "obs_max_utcday": umax,
             "obs_latest": round(last["temp"], 1),
             "obs_latest_utc": datetime.fromtimestamp(last["t"], timezone.utc)
                               .isoformat(timespec="seconds"),
@@ -205,13 +218,15 @@ def observations(city, st, om, metar, now_utc):
             mx = tv if mx is None else max(mx, tv)
         if n:
             return {"obs_source": "open_meteo_model", "obs_n": n,
-                    "obs_max": round(mx, 1), "obs_latest": round(latest, 1),
+                    "obs_max": round(mx, 1), "obs_max_utcday": umax,
+                    "obs_latest": round(latest, 1),
                     "obs_latest_utc": "", "wind_dir": "", "wind_kt": "",
                     "precip_mm": "", "cloud_pct": "",
                     "local_hour": round(local.hour + local.minute / 60, 2),
                     "hours_to_sunset": hours_to_sunset if hours_to_sunset is not None else ""}
 
-    return {"obs_source": "none", "obs_n": 0, "obs_max": "", "obs_latest": "",
+    return {"obs_source": "none", "obs_n": 0, "obs_max": "", "obs_max_utcday": umax,
+            "obs_latest": "",
             "obs_latest_utc": "", "wind_dir": "", "wind_kt": "", "precip_mm": "",
             "cloud_pct": "", "local_hour": round(local.hour + local.minute / 60, 2),
             "hours_to_sunset": hours_to_sunset if hours_to_sunset is not None else ""}
@@ -280,7 +295,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default=ROOT)
     ap.add_argument("--cities", default=None)
-    ap.add_argument("--metar-hours", type=int, default=18)
+    ap.add_argument("--metar-hours", type=int, default=30)  # must span a local day AND a UTC day
     a = ap.parse_args()
 
     inputs_path = os.path.join(a.repo, "data", "latest.json")
