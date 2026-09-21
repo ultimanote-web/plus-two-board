@@ -146,6 +146,27 @@ it is reported each week and ruled on at no point in this registration.
    halted project something to do. That is where wishful reading lives, which is why E,
    A and the 0.5 ratio are written down today.
 
+## Amendment 2026-09-21 — sampling frequency, not the rule
+
+The first live capture (38/38 stations returning METAR, zero fallbacks) exposed a
+mechanical flaw in the **instrument**. At six-hour capture spacing a city's
+`hours_to_sunset` can only take the values {S mod 6, +6, +12, +18}, where S is its
+sunset in UTC — a constant for that city. A city whose `S mod 6` falls outside [1, 5]
+therefore **never** qualifies, on any day. Measured on the first capture: 23 of 38
+cities reachable, and the same 15 excluded permanently. That is a systematic,
+non-random loss of a third of the field.
+
+Captures move to **every three hours** (00/03/06/09/12/15/18/21 UTC), at which every
+city is reachable, because either `S mod 3` or `S mod 3 + 3` always lands inside [1, 5].
+
+**The cohort rule above is unchanged** — still one row per city-day, still the capture
+nearest `hours_to_sunset` = 3.0, still the [1, 5] band, still METAR-only, still 800
+city-days, still the same decision thresholds. Only the sampling rate changed, and it
+changed in the direction that admits *more* of the field rather than a more convenient
+part of it. Recorded here because amending a registration is exactly the move that
+needs to be on the record, and because the window had not yet opened when this was
+found.
+
 ## Outcome
 
 _To be completed after 2026-10-31. Leave blank until then._

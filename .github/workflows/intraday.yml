@@ -13,12 +13,18 @@ name: intraday
 #
 # This workflow NEVER trades and never selects. It collects.
 
+# Every three hours, not every six. At six-hour spacing a city's hours_to_sunset takes
+# only the values {S mod 6, +6, +12, +18} — fixed for that city, day after day — so a
+# city whose S mod 6 falls outside [1,5] can NEVER land in the registered window. The
+# first live capture confirmed it: 23 of 38 cities reachable, and the same 15 excluded
+# every single day. At three-hour spacing every city is reachable, because either
+# (S mod 3) or (S mod 3) + 3 always falls inside [1,5].
+#
+# This changes the instrument, not the rule. The cohort definition in
+# research/prereg-late-day-residual.md is untouched.
 on:
   schedule:
-    - cron: "5 0 * * *"
-    - cron: "5 6 * * *"
-    - cron: "5 12 * * *"
-    - cron: "5 18 * * *"
+    - cron: "5 0,3,6,9,12,15,18,21 * * *"
   workflow_dispatch:
     inputs:
       cities:
