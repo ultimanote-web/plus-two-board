@@ -1,30 +1,30 @@
 # HALTED
 
-_self-check 2026-09-20T18:30:46+00:00_
+_self-check 2026-09-21T04:15:23+00:00_
 
 ## Do not trade the next board
 
-- selected rows: 5 of 29 settled at +2 against 1.13 expected — P(>=5 | tails correct) = 0.49%, below the 2% halt threshold
+- selected rows: 6 of 34 settled at +2 against 1.30 expected — P(>=6 | tails correct) = 0.17%, below the 2% halt threshold
 - shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) — treat as station-specific until explained
 - karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) — treat as station-specific until explained
 
 ## Selected rows
 
-- 5 of 29 settled at +2 (17%), against 1.13 expected
-- P(>= 5 | tails correct) = 0.49%
-- 95% CI on the realized rate: 8-35%
+- 6 of 34 settled at +2 (18%), against 1.3 expected
+- P(>= 6 | tails correct) = 0.17%
+- 95% CI on the realized rate: 8-34%
 
 ## Whole field
 
-- 13 of 313 at >=+2 (4.2%) against 7.5% predicted, t = -2.19
+- 14 of 349 at >=+2 (4.0%) against 7.6% predicted, t = -2.41
 
 ## Does the tail order the outcomes?
 
 | band | range | n | hits | expected |
 |---|---|---|---|---|
-| low | 2.1-5.2% | 104 | 6 | 3.87 |
-| mid | 5.2-8.3% | 104 | 4 | 7.34 |
-| high | 8.3-23.2% | 105 | 3 | 12.42 |
+| low | 2.1-5.2% | 116 | 7 | 4.3 |
+| mid | 5.2-8.3% | 116 | 4 | 8.18 |
+| high | 8.3-23.2% | 117 | 3 | 13.89 |
 
 ## Two estimates of the same risk disagree
 
@@ -51,11 +51,11 @@ somewhat lower by construction, so only gross divergence is listed.
 
 ## Pipeline
 
-- inputs 14.3 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+- inputs 0.0 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
 
 ## Warnings
 
-- field: predicted 7.5% sits above the realized interval [2.4-7.0] — tails may be too conservative
+- field: predicted 7.6% sits above the realized interval [2.4-6.6] — tails may be too conservative
 - ordering: the low-tail band produced more +2 settlements than the high-tail band — the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet
 - tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) — these rows can be selected while carrying more risk than scored
 - tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) — the board may be excluding rows that are not actually risky
