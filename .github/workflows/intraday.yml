@@ -8,23 +8,32 @@ name: intraday
 # observable and the forecast has been superseded by a reading.
 #
 # Each run keys every city to its OWN local date, so Tokyo's live market and Toronto's
-# live market are both captured correctly from a single UTC clock. 00/06/12/18 UTC
-# gives every longitude at least one observation in its afternoon.
+# live market are both captured correctly from a single UTC clock.
 #
 # This workflow NEVER trades and never selects. It collects.
 
-# Every three hours, not every six. At six-hour spacing a city's hours_to_sunset takes
-# only the values {S mod 6, +6, +12, +18} — fixed for that city, day after day — so a
-# city whose S mod 6 falls outside [1,5] can NEVER land in the registered window. The
-# first live capture confirmed it: 23 of 38 cities reachable, and the same 15 excluded
-# every single day. At three-hour spacing every city is reachable, because either
-# (S mod 3) or (S mod 3) + 3 always falls inside [1,5].
+# Hourly, because GitHub drops most of them.
+#
+# The three-hourly schedule was set on 2026-09-21 to guarantee every city could reach
+# the registered [1,5]h-to-sunset window. It did not work, and the reason is GitHub:
+# scheduled workflows on public repos are best-effort, and over 2026-09-22..24 only
+# FOUR of the eight daily runs actually fired, each 20-90 minutes late. Measured
+# consequence: 48% of city-days reached the window and 17 cities never did — including
+# the entire Chinese cluster (Qingdao, Shenzhen, Guangzhou, Wuhan, Chengdu, Chongqing,
+# Shanghai, Beijing, Zhengzhou).
+#
+# Hourly is the fix that needs no new infrastructure: if roughly half fire, that is
+# still ~12 captures a day at irregular offsets, and irregular is better than regular
+# here — jitter breaks the fixed-offset problem that caused the original flaw.
+#
+# If coverage still falls short, the robust answer is a cron on the droplet, which runs
+# reliably and already has the repo and a network route.
 #
 # This changes the instrument, not the rule. The cohort definition in
 # research/prereg-late-day-residual.md is untouched.
 on:
   schedule:
-    - cron: "5 0,3,6,9,12,15,18,21 * * *"
+    - cron: "7 * * * *"
   workflow_dispatch:
     inputs:
       cities:

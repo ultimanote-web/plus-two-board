@@ -159,6 +159,18 @@ non-random loss of a third of the field.
 Captures move to **every three hours** (00/03/06/09/12/15/18/21 UTC), at which every
 city is reachable, because either `S mod 3` or `S mod 3 + 3` always lands inside [1, 5].
 
+**Follow-up 2026-09-25: three-hourly did not happen.** GitHub's scheduled workflows are
+best-effort, and over 2026-09-22..24 only four of the eight daily runs fired, each 20-90
+minutes late. Measured over 114 fully-captured city-days: **48% reached the window, and
+17 cities never did** — Amsterdam, Beijing, Cape Town, Chengdu, Chongqing, Guangzhou,
+Kuala Lumpur, Manila, Milan, Munich, Qingdao, Shanghai, Shenzhen, Singapore, Taipei,
+Wuhan, Zhengzhou. That is both a shortfall against the 800-city-day minimum and a
+biased sample, since the missing set is geographically clustered. The schedule moves to
+**hourly**; if roughly half fire that is ~12 irregularly-spaced captures a day, and the
+irregularity helps rather than hurts. Coverage is to be re-measured before the reading,
+and if it is still materially below full the correct response is to extend the window,
+not to lower the minimum.
+
 **The cohort rule above is unchanged** — still one row per city-day, still the capture
 nearest `hours_to_sunset` = 3.0, still the [1, 5] band, still METAR-only, still 800
 city-days, still the same decision thresholds. Only the sampling rate changed, and it
