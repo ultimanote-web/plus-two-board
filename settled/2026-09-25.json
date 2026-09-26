@@ -1,0 +1,192 @@
+{
+ "date": "2026-09-25",
+ "fetched_utc": "2026-09-26T04:15:27+00:00",
+ "resolved": {
+  "amsterdam": {
+   "actual": 22,
+   "bucket": "22\u00b0C",
+   "open_ended": false
+  },
+  "ankara": {
+   "actual": 20,
+   "bucket": "20\u00b0C",
+   "open_ended": false
+  },
+  "beijing": {
+   "actual": 26,
+   "bucket": "26\u00b0C",
+   "open_ended": false
+  },
+  "buenos-aires": {
+   "actual": 27,
+   "bucket": "27\u00b0C",
+   "open_ended": false
+  },
+  "busan": {
+   "actual": 27,
+   "bucket": "27\u00b0C",
+   "open_ended": false
+  },
+  "cape-town": {
+   "actual": 23,
+   "bucket": "23\u00b0C",
+   "open_ended": false
+  },
+  "chengdu": {
+   "actual": 28,
+   "bucket": "28\u00b0C",
+   "open_ended": false
+  },
+  "chongqing": {
+   "actual": 29,
+   "bucket": "29\u00b0C",
+   "open_ended": false
+  },
+  "guangzhou": {
+   "actual": 35,
+   "bucket": "35\u00b0C",
+   "open_ended": false
+  },
+  "helsinki": {
+   "actual": 13,
+   "bucket": "13\u00b0C",
+   "open_ended": false
+  },
+  "istanbul": {
+   "actual": 21,
+   "bucket": "21\u00b0C",
+   "open_ended": false
+  },
+  "jeddah": {
+   "actual": 37,
+   "bucket": "37\u00b0C",
+   "open_ended": false
+  },
+  "karachi": {
+   "actual": 34,
+   "bucket": "34\u00b0C",
+   "open_ended": false
+  },
+  "kuala-lumpur": {
+   "actual": 33,
+   "bucket": "33\u00b0C",
+   "open_ended": false
+  },
+  "london": {
+   "actual": 24,
+   "bucket": "24\u00b0C",
+   "open_ended": false
+  },
+  "lucknow": {
+   "actual": 24,
+   "bucket": "24\u00b0C",
+   "open_ended": false
+  },
+  "madrid": {
+   "actual": 35,
+   "bucket": "35\u00b0C",
+   "open_ended": false
+  },
+  "manila": {
+   "actual": 34,
+   "bucket": "34\u00b0C",
+   "open_ended": false
+  },
+  "milan": {
+   "actual": 22,
+   "bucket": "22\u00b0C",
+   "open_ended": false
+  },
+  "moscow": {
+   "actual": 12,
+   "bucket": "12\u00b0C",
+   "open_ended": false
+  },
+  "munich": {
+   "actual": 19,
+   "bucket": "19\u00b0C",
+   "open_ended": false
+  },
+  "panama-city": {
+   "actual": 30,
+   "bucket": "30\u00b0C",
+   "open_ended": false
+  },
+  "paris": {
+   "actual": 28,
+   "bucket": "28\u00b0C",
+   "open_ended": false
+  },
+  "qingdao": {
+   "actual": 22,
+   "bucket": "22\u00b0C",
+   "open_ended": false
+  },
+  "sao-paulo": {
+   "actual": 28,
+   "bucket": "28\u00b0C",
+   "open_ended": false
+  },
+  "seoul": {
+   "actual": 24,
+   "bucket": "24\u00b0C",
+   "open_ended": false
+  },
+  "shanghai": {
+   "actual": 31,
+   "bucket": "31\u00b0C",
+   "open_ended": false
+  },
+  "shenzhen": {
+   "actual": 32,
+   "bucket": "32\u00b0C",
+   "open_ended": false
+  },
+  "singapore": {
+   "actual": 32,
+   "bucket": "32\u00b0C",
+   "open_ended": false
+  },
+  "taipei": {
+   "actual": 33,
+   "bucket": "33\u00b0C",
+   "open_ended": false
+  },
+  "tel-aviv": {
+   "actual": 30,
+   "bucket": "30\u00b0C",
+   "open_ended": false
+  },
+  "tokyo": {
+   "actual": 27,
+   "bucket": "27\u00b0C",
+   "open_ended": false
+  },
+  "toronto": {
+   "actual": 21,
+   "bucket": "21\u00b0C",
+   "open_ended": false
+  },
+  "warsaw": {
+   "actual": 16,
+   "bucket": "16\u00b0C",
+   "open_ended": false
+  },
+  "wellington": {
+   "actual": 15,
+   "bucket": "15\u00b0C",
+   "open_ended": false
+  },
+  "wuhan": {
+   "actual": 33,
+   "bucket": "33\u00b0C",
+   "open_ended": false
+  },
+  "zhengzhou": {
+   "actual": 22,
+   "bucket": "22\u00b0C or below",
+   "open_ended": true
+  }
+ },
+ "unresolved": []
+}
