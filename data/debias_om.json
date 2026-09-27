@@ -1,7 +1,7 @@
 {
  "builder": "build_debias/1.0.0",
  "forecast_definition": "Open-Meteo archive, hourly temperature_2m, max over local 11:00-17:00",
- "generated_utc": "2026-09-20T03:40:55+00:00",
+ "generated_utc": "2026-09-27T03:40:57+00:00",
  "schema": 1,
  "seasonal_window": {
   "centre_doy": 274,
@@ -556,12 +556,12 @@
    "delta_vs_wxdb": 0.6,
    "display": "Wellington",
    "icao": "NZWN",
-   "mean": 1.2,
+   "mean": 1.18,
    "n_days": 193,
    "p10": 0.3,
    "p90": 2.1,
-   "resid_ge2_share": 0.0155,
-   "sd": 0.86,
+   "resid_ge2_share": 0.0104,
+   "sd": 0.77,
    "wxdb_debias_median": 0.6
   },
   "wuhan": {
