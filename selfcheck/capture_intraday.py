@@ -291,6 +291,50 @@ def summarize(rungs):
 
 # ------------------------------------------------------------------------ main
 
+def migrate_header(path):
+    """Keep log/intraday.csv's header in step with COLS, and repair it if it is not.
+
+    This exists because of a real bug. `obs_max_utcday` was inserted into COLS on
+    2026-09-22, but DictWriter only writes a header when the file is new — so every
+    row appended afterwards carried 32 values under a 31-column header, and every
+    reader silently shifted each field from `obs_latest` onward by one. `depth_up2`
+    came back holding prices, the registered depth gate rejected 97% of the cohort,
+    and the study read zero qualifying rows for a week. The values were never lost;
+    they were misfiled, and a misfiled column is worse than a missing one because it
+    still parses.
+
+    Rows are re-keyed by FIELD COUNT, not by position: a row with len(COLS) values is
+    already in COLS order, a row matching the on-disk header is read with that header.
+    Any future column addition heals itself the same way on the next run.
+    """
+    if not os.path.exists(path):
+        return
+    with open(path, newline="") as f:
+        rows = list(csv.reader(f))
+    if not rows:
+        return
+    hdr = rows[0]
+    if hdr == COLS:
+        return
+    out = []
+    for r in rows[1:]:
+        if len(r) == len(COLS):
+            d = dict(zip(COLS, r))
+        elif len(r) == len(hdr):
+            d = dict(zip(hdr, r))
+        else:
+            print(f"  ! migrate: skipping a row with {len(r)} fields", file=sys.stderr)
+            continue
+        out.append([d.get(c, "") for c in COLS])
+    tmp = path + ".tmp"
+    with open(tmp, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(COLS)
+        w.writerows(out)
+    os.replace(tmp, path)
+    print(f"  migrated log/intraday.csv: {len(hdr)} -> {len(COLS)} columns, {len(out)} rows")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default=ROOT)
@@ -347,6 +391,7 @@ def main():
 
     lp = os.path.join(a.repo, "log", "intraday.csv")
     os.makedirs(os.path.dirname(lp), exist_ok=True)
+    migrate_header(lp)
     seen = set()
     if os.path.exists(lp):
         seen = {(r["date"], r["city"], r["captured_utc"]) for r in csv.DictReader(open(lp))}

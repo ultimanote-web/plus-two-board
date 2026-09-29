@@ -201,9 +201,42 @@ The resolving station itself is confirmed correct: the market names `site=zsqd` 
 quantity the primary test uses unless the agreement table says otherwise, and if it does
 say otherwise that is a finding to be recorded here before it is acted on.
 
+## Amendment 2026-09-29 — a column bug, and what it did not change
+
+`obs_max_utcday` was inserted into the capture's column list on 2026-09-22, but a CSV
+header is written only when the file is new. Every row appended after that carried 32
+values under a 31-column header, so every reader shifted each field from `obs_latest`
+onward by one. `depth_up2` came back holding prices. The registered `depth_up2 >= 300`
+gate then rejected 97% of the cohort and the study read **zero** qualifying city-days
+for a week.
+
+Repaired 2026-09-29 by re-keying rows on field count — 32 values are in the new order,
+31 in the old — and `capture_intraday.py` now migrates the header on every run, so any
+future column addition heals itself. No values were lost; they were misfiled, which is
+worse than missing because it still parses.
+
+**Nothing registered changes.** With the column read correctly, `depth_up2` has a median
+of **1,355** in-window and **87% of rows clear the registered 300 threshold**. The gate
+was never the problem, so it stands exactly as written. This is recorded because a
+silent parsing bug that made a study look empty is precisely the failure that a
+registration cannot catch on its own, and the next person reading these files deserves
+to know it happened.
+
+### Two things the repair settled
+
+**The day window is local, empirically.** METAR maximum against the settled bucket over
+240 city-days: **98.3% exact on the local day** (236/240) against 92.7% on the UTC day.
+Above the 95% bar weakness 3 set, and the ambiguity in the market's wording is closed by
+measurement rather than assumption. `obs_max` (local day) remains the primary quantity.
+
+**The sample will not reach 800 by 2026-10-31.** 50 qualifying city-days over the first
+five dates is roughly 10 a day; 32 days remain, so the window closes near 370. Per the
+rule already written above, the response is to **extend the window, not lower the
+minimum** — projected reading around mid-January 2027. No threshold moves.
+
 ## Outcome
 
-_To be completed after 2026-10-31. Leave blank until then._
+_To be completed once 800 qualifying city-days exist. Leave blank until then._
 
 - Qualifying city-days observed:
 - Distinct dates:
