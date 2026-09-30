@@ -82,7 +82,7 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-09-30T12:13:44+00:00",
+ "generated_utc": "2026-09-30T20:35:44+00:00",
  "halts": [
   "selected rows: 8 of 64 settled at +2 against 2.50 expected \u2014 P(>=8 | tails correct) = 0.34%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained",
@@ -94,7 +94,7 @@
   "lucknow: settled at +2 twice within 14 days (2026-09-26 and 2026-09-28) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 8.0,
+  "inputs_age_hours": 16.3,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
