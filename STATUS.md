@@ -1,34 +1,35 @@
 # HALTED
 
-_self-check 2026-09-29T20:28:34+00:00_
+_self-check 2026-09-30T04:15:27+00:00_
 
 ## Do not trade the next board
 
-- selected rows: 8 of 60 settled at +2 against 2.33 expected — P(>=8 | tails correct) = 0.22%, below the 2% halt threshold
+- selected rows: 8 of 64 settled at +2 against 2.50 expected — P(>=8 | tails correct) = 0.34%, below the 2% halt threshold
 - shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) — treat as station-specific until explained
 - karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) — treat as station-specific until explained
 - zhengzhou: settled at +2 twice within 14 days (2026-09-17 and 2026-09-21) — treat as station-specific until explained
 - ankara: settled at +2 twice within 14 days (2026-09-18 and 2026-09-22) — treat as station-specific until explained
+- chengdu: settled at +2 twice within 14 days (2026-09-23 and 2026-09-29) — treat as station-specific until explained
 - cape-town: settled at +2 twice within 14 days (2026-09-25 and 2026-09-26) — treat as station-specific until explained
 - lucknow: settled at +2 twice within 14 days (2026-09-26 and 2026-09-28) — treat as station-specific until explained
 
 ## Selected rows
 
-- 8 of 60 settled at +2 (13%), against 2.33 expected
-- P(>= 8 | tails correct) = 0.22%
-- 95% CI on the realized rate: 7-24%
+- 8 of 64 settled at +2 (12%), against 2.5 expected
+- P(>= 8 | tails correct) = 0.34%
+- 95% CI on the realized rate: 6-23%
 
 ## Whole field
 
-- 26 of 642 at >=+2 (4.0%) against 7.5% predicted, t = -3.20
+- 27 of 677 at >=+2 (4.0%) against 7.5% predicted, t = -3.34
 
 ## Does the tail order the outcomes?
 
 | band | range | n | hits | expected |
 |---|---|---|---|---|
-| low | 2.1-4.7% | 214 | 9 | 7.91 |
-| mid | 4.7-8.3% | 214 | 13 | 15.06 |
-| high | 8.3-25.1% | 214 | 4 | 25.29 |
+| low | 2.1-4.7% | 225 | 9 | 8.3 |
+| mid | 4.7-8.3% | 225 | 14 | 15.78 |
+| high | 8.3-25.1% | 227 | 4 | 26.7 |
 
 ## Two estimates of the same risk disagree
 
@@ -55,11 +56,11 @@ somewhat lower by construction, so only gross divergence is listed.
 
 ## Pipeline
 
-- inputs 16.2 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+- inputs 0.0 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
 
 ## Warnings
 
-- field: predicted 7.5% sits above the realized interval [2.8-5.9] — tails may be too conservative
+- field: predicted 7.5% sits above the realized interval [2.8-5.7] — tails may be too conservative
 - ordering: the low-tail band produced more +2 settlements than the high-tail band — the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet
 - tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) — these rows can be selected while carrying more risk than scored
 - tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) — the board may be excluding rows that are not actually risky
