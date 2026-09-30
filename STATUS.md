@@ -1,6 +1,6 @@
 # HALTED
 
-_self-check 2026-09-30T04:15:27+00:00_
+_self-check 2026-09-30T12:13:44+00:00_
 
 ## Do not trade the next board
 
@@ -56,7 +56,7 @@ somewhat lower by construction, so only gross divergence is listed.
 
 ## Pipeline
 
-- inputs 0.0 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
+- inputs 8.0 h old, snapshot `d97b44c4b5f2`, 38 stations / 38 tails
 
 ## Warnings
 
