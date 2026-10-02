@@ -1,8 +1,8 @@
 {
  "board_size": {
-  "days": 20,
-  "mean_picks": 3.4,
-  "validation_horizon_years": 2.1
+  "days": 21,
+  "mean_picks": 3.43,
+  "validation_horizon_years": 2.0
  },
  "exclusions": [
   {
@@ -26,15 +26,15 @@
  ],
  "field": {
   "ci": [
-   0.0296,
-   0.0593
+   0.0303,
+   0.0595
   ],
-  "expected": 53.62,
-  "hits": 30,
+  "expected": 56.43,
+  "hits": 32,
   "mean_tail": 0.0751,
-  "n": 714,
-  "rate": 0.042,
-  "t": -3.23
+  "n": 751,
+  "rate": 0.0426,
+  "t": -3.25
  },
  "gates": [
   {
@@ -82,9 +82,9 @@
    "threshold": 2.5
   }
  ],
- "generated_utc": "2026-10-01T20:50:09+00:00",
+ "generated_utc": "2026-10-02T04:15:25+00:00",
  "halts": [
-  "selected rows: 8 of 68 settled at +2 against 2.64 expected \u2014 P(>=8 | tails correct) = 0.48%, below the 2% halt threshold",
+  "selected rows: 8 of 72 settled at +2 against 2.77 expected \u2014 P(>=8 | tails correct) = 0.64%, below the 2% halt threshold",
   "shenzhen: settled at +2 twice within 14 days (2026-09-10 and 2026-09-12) \u2014 treat as station-specific until explained",
   "karachi: settled at +2 twice within 14 days (2026-09-12 and 2026-09-14) \u2014 treat as station-specific until explained",
   "zhengzhou: settled at +2 twice within 14 days (2026-09-17 and 2026-09-21) \u2014 treat as station-specific until explained",
@@ -95,7 +95,7 @@
   "lucknow: settled at +2 twice within 14 days (2026-09-26 and 2026-09-28) \u2014 treat as station-specific until explained"
  ],
  "pipeline": {
-  "inputs_age_hours": 16.6,
+  "inputs_age_hours": 0.0,
   "snapshot": "d97b44c4b5f2",
   "stations": 38,
   "tails": 38
@@ -143,14 +143,16 @@
    "city": "chengdu",
    "dates": [
     "2026-09-23",
-    "2026-09-29"
+    "2026-09-29",
+    "2026-10-01"
    ]
   },
   {
    "city": "cape-town",
    "dates": [
     "2026-09-25",
-    "2026-09-26"
+    "2026-09-26",
+    "2026-10-01"
    ]
   },
   {
@@ -163,15 +165,15 @@
  ],
  "selected": {
   "ci": [
-   0.0608,
-   0.2154
+   0.0574,
+   0.2042
   ],
-  "expected": 2.64,
+  "expected": 2.77,
   "losses": 8,
-  "mean_tail": 0.0388,
-  "n": 68,
-  "p_value": 0.00479,
-  "rate": 0.1176
+  "mean_tail": 0.0385,
+  "n": 72,
+  "p_value": 0.00644,
+  "rate": 0.1111
  },
  "status": "HALTED",
  "tail_conflict": [
@@ -242,9 +244,9 @@
  "terciles": [
   {
    "band": "low",
-   "expected": 8.79,
+   "expected": 9.24,
    "hits": 10,
-   "n": 238,
+   "n": 250,
    "range": [
     0.0208,
     0.0469
@@ -252,9 +254,9 @@
   },
   {
    "band": "mid",
-   "expected": 16.72,
-   "hits": 15,
-   "n": 238,
+   "expected": 17.58,
+   "hits": 17,
+   "n": 250,
    "range": [
     0.0469,
     0.0833
@@ -262,9 +264,9 @@
   },
   {
    "band": "high",
-   "expected": 28.11,
+   "expected": 29.61,
    "hits": 5,
-   "n": 238,
+   "n": 251,
    "range": [
     0.0833,
     0.2513
@@ -272,7 +274,7 @@
   }
  ],
  "warnings": [
-  "field: predicted 7.5% sits above the realized interval [3.0-5.9] \u2014 tails may be too conservative",
+  "field: predicted 7.5% sits above the realized interval [3.0-6.0] \u2014 tails may be too conservative",
   "ordering: the low-tail band produced more +2 settlements than the high-tail band \u2014 the score's primary parameter has not demonstrated discrimination; do not tighten anything on it yet",
   "tail may be UNDERSTATED at chengdu (7.8% vs 15.0%), kuala-lumpur (8.3% vs 14.0%) \u2014 these rows can be selected while carrying more risk than scored",
   "tail may be OVERSTATED at singapore (10.4% vs 1.0%), amsterdam (14.7% vs 1.6%), helsinki (13.0% vs 1.6%), beijing (13.0% vs 2.1%), toronto (14.7% vs 3.1%) \u2014 the board may be excluding rows that are not actually risky"
